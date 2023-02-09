@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  pdf_pro_db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: pdf_db
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_HOST: pdf_pro_db
+      DATABASE_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: pdf_db
+    depends_on:
+      - pdf_pro_db
+
+volumes:
+  pgdata:
