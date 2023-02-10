@@ -13,11 +13,14 @@ services:
   backend:
     build: ./backend
     environment:
+      PORT: 8080
       DATABASE_HOST: pdf_pro_db
       DATABASE_PORT: 5432
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: pdf_db
+    ports:
+      - "8080:8080"
     depends_on:
       - pdf_pro_db
 
