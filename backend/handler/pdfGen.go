@@ -15,36 +15,42 @@ import (
 // The response `w` is a PDF with the contents of the request body if no errors happen
 func HandlePdfGen(w http.ResponseWriter, r *http.Request) {
 
+	// Returns an error if the request is not of Method POST
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", "POST")
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprint(w, "Only POST method allowed")
+
+		fmt.Fprint(w, `{"error":"Only POST method allowed"}`)
 		return
 	}
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error reading request body")
+		fmt.Fprint(w, `{"error":"Error reading request body"}`)
+		fmt.Println(err)
 		return
 	}
 
 	var jsonData map[string]interface{}
 
 	err = json.Unmarshal(body, &jsonData)
-
 	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Send valid JSON")
+		fmt.Fprint(w, `{"error":"Send valid JSON"}`)
 		return
 	}
 
 	err = generatePdf(jsonData, w)
-
 	if err != nil {
 		fmt.Print(err)
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Could not send the PDF"))
+		w.Write([]byte(`{"error":"Could not send the PDF"}`))
+		fmt.Println(err)
 	}
 }
 
@@ -58,7 +64,7 @@ func generatePdf(content map[string]interface{}, out io.Writer) error {
 
 	for k, v := range content {
 		pdf.Write(10, tr(
-			fmt.Sprintf("%v = %v\n", k, v),
+			fmt.Sprintf("%v: %+v\n", k, v),
 		))
 	}
 
