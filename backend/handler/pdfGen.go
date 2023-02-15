@@ -7,6 +7,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"reflect"
+	"strings"
 
 	"github.com/jung-kurt/gofpdf"
 )
@@ -62,11 +64,9 @@ func generatePdf(content map[string]interface{}, out io.Writer) error {
 	pdf.AddPage()
 	pdf.SetFont("Times", "", 20)
 
-	for k, v := range content {
-		pdf.Write(10, tr(
-			fmt.Sprintf("%v: %+v\n", k, v),
-		))
-	}
+	formattedString := getFormattedString(content, 2, 0)
+
+	pdf.Write(10, tr(formattedString))
 
 	if pdf.Err() == true {
 		return errors.New(fmt.Sprintf("Error during PDF creation: %s", pdf.Error()))
@@ -79,4 +79,49 @@ func generatePdf(content map[string]interface{}, out io.Writer) error {
 	}
 
 	return nil
+}
+
+/*
+Returns a formatted string with new lines and indentation (in the case of nested values).
+Iterates over `data` recursively and for each possible nesting adds the `indent`.
+`initialIndent` is the amount of characters all strings will start,
+for example if `initialIndent` is 4 all the strings will start with 4 empty spaces
+
+NOTE: If a SLICE contains another slice or a map, this map or slice will NOT be returned.
+*/
+func getFormattedString(data map[string]interface{}, indent, initialIndent int) string {
+	var formattedString string
+	indentSpaces := strings.Repeat(" ", initialIndent)
+
+	for k, v := range data {
+		_, isArray := v.([]interface{})
+		_, isMap := v.(map[string]interface{})
+
+		if isArray == true {
+			filteredArr := getSliceWithoutNesting(v.([]interface{}))
+			formattedString = fmt.Sprintf("%v%v = %v\n", indentSpaces, k, filteredArr)
+		} else if isMap == true {
+			formattedString += fmt.Sprintf("%v%v:\n", indentSpaces, k)
+			str := getFormattedString(v.(map[string]interface{}), indent, initialIndent+indent)
+			formattedString += str
+		} else {
+			formattedString += fmt.Sprintf("%v%v = %v\n", indentSpaces, k, v)
+		}
+	}
+	return formattedString
+}
+
+// Returns a new slice that does not contain nesting of another slice or map
+// For example [1, [1, 2]] returns [1]
+func getSliceWithoutNesting(arr []interface{}) []interface{} {
+
+	var filteredArr []interface{}
+
+	for _, v := range arr {
+		if fmt.Sprint((reflect.TypeOf(v).Kind())) == "map" || fmt.Sprint((reflect.TypeOf(v).Kind())) == "slice" {
+			continue
+		}
+		filteredArr = append(filteredArr, v)
+	}
+	return filteredArr
 }
