@@ -6,11 +6,25 @@ import (
 )
 
 func TestGetSliceWithoutNesting(t *testing.T) {
-	original := []interface{}{1, 2, 3, []int{4, 5}}
-	got := getSliceWithoutNesting(original)
-	want := []interface{}{1, 2, 3}
+	type getSliceWithoutNestingTest struct {
+		originalSlice, expectedSlice []interface{}
+	}
 
-	if reflect.DeepEqual(got, want) == false {
-		t.Errorf("got %v, wanted %v", got, want)
+	var getSliceWithoutNestingTests = []getSliceWithoutNestingTest{
+		{
+			[]interface{}{1, 2, 3, []interface{}{4}}, []interface{}{1, 2, 3},
+		},
+		{
+			[]interface{}{1, 2, 3, map[string]string{"any": "value"}, 4}, []interface{}{1, 2, 3, 4},
+		},
+	}
+
+	for _, elmnt := range getSliceWithoutNestingTests {
+
+		elmnt.originalSlice = getSliceWithoutNesting(elmnt.originalSlice) // convert the original slice to the expected slice
+
+		if reflect.DeepEqual(elmnt.originalSlice, elmnt.expectedSlice) == false {
+			t.Errorf("got %v, wanted %v", elmnt.originalSlice, elmnt.expectedSlice)
+		}
 	}
 }
