@@ -57,7 +57,7 @@ func TestGetFormattedString(t *testing.T) {
 				"parent": map[string]interface{}{
 					"key": "value",
 				},
-				"parentSlice": []int{1, 2, 3},
+				"parentSlice": []interface{}{1, 2, 3},
 			},
 			4, 3,
 			[]string{"", "       key = value", "   number1 = 1", "   number2 = 2", "   parent:", "   parentSlice = [1 2 3]"},
