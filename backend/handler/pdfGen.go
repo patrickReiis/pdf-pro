@@ -99,7 +99,7 @@ func getFormattedString(data map[string]interface{}, indent, initialIndent int) 
 
 		if isArray == true {
 			filteredArr := getSliceWithoutNesting(v.([]interface{}))
-			formattedString = fmt.Sprintf("%v%v = %v\n", indentSpaces, k, filteredArr)
+			formattedString += fmt.Sprintf("%v%v = %v\n", indentSpaces, k, filteredArr)
 		} else if isMap == true {
 			formattedString += fmt.Sprintf("%v%v:\n", indentSpaces, k)
 			str := getFormattedString(v.(map[string]interface{}), indent, initialIndent+indent)
