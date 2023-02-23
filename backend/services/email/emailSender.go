@@ -2,6 +2,7 @@
 package email
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"log"
@@ -10,7 +11,7 @@ import (
 )
 
 // Implementation logic of email sending
-func emailSender(to []string, subject string, body []byte) error {
+func emailSender(to []string, subject string, body []byte, pdfToAttach []byte) error {
 
 	// the env variables are also checked in the `main.go` file
 	email, ok := os.LookupEnv("EMAIL")
@@ -34,6 +35,26 @@ func emailSender(to []string, subject string, body []byte) error {
 
 	auth := smtp.PlainAuth("", email, password, host)
 
+	if len(pdfToAttach) > 0 {
+		msg := []byte(fmt.Sprintf("To: %s\r\n"+
+			"Subject: %s\r\n"+
+			"MIME-Version: 1.0\r\n"+
+			"Content-Type: application/pdf\r\n"+
+			"Content-Disposition: attachment; filename=\"pdf pro - status.pdf\"\r\n"+
+			"Content-Transfer-Encoding: base64\r\n"+
+			"\r\n%s\r\n", to, subject, base64.StdEncoding.EncodeToString(pdfToAttach)))
+
+		msg = append(msg, pdfToAttach...)
+
+		// send email
+		err := smtp.SendMail(addr, auth, email, to, msg)
+
+		if err != nil {
+			return errors.New(fmt.Sprintf("Could not send the email because of: %s", err))
+		}
+		return nil
+	}
+
 	// the header WITHOUT the body
 	msg := []byte(fmt.Sprintf("To: %s\r\n"+
 		"Subject: %s\r\n"+
@@ -55,6 +76,6 @@ func emailSender(to []string, subject string, body []byte) error {
 
 // Sends an email
 // This is a wrapper function
-func SendEmail(to []string, subject string, body []byte) error {
-	return emailSender(to, subject, body)
+func SendEmail(to []string, subject string, body []byte, pdfToAttach []byte) error {
+	return emailSender(to, subject, body, pdfToAttach)
 }
