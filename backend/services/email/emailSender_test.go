@@ -1,6 +1,7 @@
 package email
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -18,13 +19,24 @@ func TestSendEmail(t *testing.T) {
 	body := []byte("This is a new body message")
 	subject := "Test email sending - PDF PRO"
 
-	err := SendEmail(to, subject, body)
+	err := SendEmail(to, subject, body, []byte(""))
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 
-	err = SendEmail([]string{""}, "", []byte(""))
+	err = SendEmail([]string{""}, "", []byte(""), []byte(""))
 	if err == nil {
-		t.Error("The email sender should have returned an error")
+		t.Errorf("The email sender should have returned an error: %s", err)
+	}
+
+	pdfFile, err := ioutil.ReadFile("testdata/testEmail.pdf")
+	if err != nil {
+		t.Errorf("Could not read `testEmail.pdf`: %s", err)
+	}
+
+	err = SendEmail(to, subject, body, pdfFile)
+
+	if err != nil {
+		t.Errorf("The email should have been sent: %s", err)
 	}
 }
