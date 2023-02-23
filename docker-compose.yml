@@ -19,6 +19,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: pdf_db
+      EMAIL_HOST: smtp.gmail.com
+      EMAIL: ${EMAIL}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_HOST_PORT: 587
+      RECIPIENT_TEST_EMAIL: ${RECIPIENT_TEST_EMAIL}
     ports:
       - "8080:8080"
     depends_on:
