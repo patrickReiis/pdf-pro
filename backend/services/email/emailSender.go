@@ -42,7 +42,7 @@ func emailSender(to []string, subject string, body []byte, pdfToAttach []byte) e
 			"Content-Type: application/pdf\r\n"+
 			"Content-Disposition: attachment; filename=\"pdf pro - status.pdf\"\r\n"+
 			"Content-Transfer-Encoding: base64\r\n"+
-			"\r\n%s\r\n", to, subject, base64.StdEncoding.EncodeToString(pdfToAttach)))
+			"\r\n%s\r\n", to[0], subject, base64.StdEncoding.EncodeToString(pdfToAttach)))
 
 		msg = append(msg, pdfToAttach...)
 
@@ -75,7 +75,10 @@ func emailSender(to []string, subject string, body []byte, pdfToAttach []byte) e
 }
 
 // Sends an email
-// This is a wrapper function
+// Sends either a PDF attachment `pdfToAttach` or a message in the body `body`, it can NOT be both
+// To send only a message pass an empty byte slice to `pdfToAttach`
+// To send only a message pass a byte slice a length superior than 0
+// Usually to pass an empty slice you can do it like `[]byte("")`
 func SendEmail(to []string, subject string, body []byte, pdfToAttach []byte) error {
 	return emailSender(to, subject, body, pdfToAttach)
 }
