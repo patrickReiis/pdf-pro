@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"pdfPro/services/email"
 	"reflect"
 	"strings"
 
@@ -46,14 +48,34 @@ func HandlePdfGen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = generatePdf(jsonData, w)
+	// Create an in-memory buffer
+	var pdfBuf bytes.Buffer
+
+	var pdfWriter io.Writer = &pdfBuf
+
+	err = generatePdf(jsonData, pdfWriter)
+	if err != nil {
+		fmt.Print(err)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(`{"error":"Could not create the PDF"}`))
+		fmt.Println(err)
+		return
+	}
+
+	err = email.SendEmail([]string{"example@example.com"}, "pdf pro - ok", []byte(""), pdfBuf.Bytes())
 	if err != nil {
 		fmt.Print(err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(`{"error":"Could not send the PDF"}`))
 		fmt.Println(err)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	fmt.Fprint(w, `{"success":"An email with a PDF attachment was sent to you"}`)
 }
 
 // Create a PDF through iterating over `content` and outputs it to `out`
