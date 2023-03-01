@@ -16,7 +16,6 @@ func RouteWithAuth(next http.HandlerFunc) http.HandlerFunc {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, `{"error":"The VALUE of the 'Authorization' header is not in the right format. The correct format should be: Secret <api-key>"}`)
-
 			return
 		}
 	}
