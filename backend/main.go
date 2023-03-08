@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("The env variable %s is not set", "EMAIL_HOST_PORT")
 	}
 
-	http.HandleFunc("/api/v1/genPdf", middleware.RouteWithAuth(handler.HandlePdfGen))
+	http.HandleFunc("/api/v1/genPdf", middleware.AllMiddleware(handler.HandlePdfGen))
 
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
 }
