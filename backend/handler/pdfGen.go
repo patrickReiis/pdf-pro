@@ -74,7 +74,7 @@ func HandlePdfGen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, `{"success":"An email with a PDF attachment was sent to you"}`)
 }
 
