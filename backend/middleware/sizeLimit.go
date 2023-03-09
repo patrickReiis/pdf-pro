@@ -5,14 +5,14 @@ import (
 	"net/http"
 )
 
+// 5mb
+const maxBytesInPostRequest = 5 * (1 << 20) // (1 << 20) = 1mb
+
 func RouteWithRequestSizeLimit(w http.ResponseWriter, r *http.Request) (ok bool) {
 
-	// 10mb
-	maxBytes := 10 * (1 << 20) // 1 << 20 = 1mb
-
-	if r.ContentLength > int64(maxBytes) {
+	if r.ContentLength > int64(maxBytesInPostRequest) {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusRequestEntityTooLarge)
 		fmt.Fprint(w, `{"error":"The request body exceeded the size of 10mb"}`)
 		return false
 	}
