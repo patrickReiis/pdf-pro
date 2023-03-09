@@ -19,6 +19,11 @@ func AllMiddleware(originalRoute http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		ok = RouteWithRequestSizeLimit(w, r)
+		if ok == false {
+			return
+		}
+
 		originalRoute(w, r)
 	}
 
