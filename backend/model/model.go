@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var dbGorm, err = connectDb()
+var dbGorm, _ = connectDb() // Ignoring possible returned error since it is checked in the `model_test.go` file
 
 func connectDb() (*gorm.DB, error) {
 
