@@ -4,11 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	model "pdfPro/model/entity"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+// My GORM database instance
 var dbGorm, _ = connectDb() // Ignoring possible returned error since it is checked in the `model_test.go` file
 
 func connectDb() (*gorm.DB, error) {
@@ -26,6 +28,9 @@ func connectDb() (*gorm.DB, error) {
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to connect database: %s", err))
 	}
+
+	// migrate schemas
+	db.AutoMigrate(&model.UserAccount{})
 
 	return db, nil
 }
