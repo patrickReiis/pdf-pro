@@ -15,7 +15,7 @@ type UserAccount struct {
 	Email             string `gorm:"unique:true"`
 	Password          string
 	RequestsTimestamp JSONB  `gorm:"type:jsonb;default:'[]';not null"`
-	ApiKey            string `gorm:"size:300"`
+	ApiKey            string `gorm:"unique:true;size:300"`
 }
 
 // Scan Unmarshal
