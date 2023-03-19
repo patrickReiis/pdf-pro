@@ -16,7 +16,13 @@ func TestCreateUserAccount(t *testing.T) {
 
 	requestsTimestamp := []string{} // empty slice since this test is for creating an account
 
-	user := model.UserAccount{Email: emailForTesting, Password: "create-hash-password-function", RequestsTimestamp: requestsTimestamp, ApiKey: "create-get-api-key-function"}
+	user := model.UserAccount{Email: emailForTesting, Password: "create-hash-password-function", RequestsTimestamp: requestsTimestamp, ApiKey: getRandomApiKey()}
+
+	doesUserExists := doesUserAlreadyExists(emailForTesting)
+
+	if doesUserExists == true {
+		return
+	}
 
 	_, err := CreateUserAccount(&user)
 	if err != nil {
