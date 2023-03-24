@@ -1,6 +1,7 @@
 package password
 
 import (
+	"encoding/base64"
 	"fmt"
 	"math/rand"
 
@@ -12,26 +13,30 @@ func Hash(password string) string {
 }
 
 func hashImpl(password string) string {
-	salt := getRandomSalt()
+	salt, _ := getRandomSalt()
 	var time uint32 = 1 // recommended according to https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-argon2-03#section-9.3
 	var memory uint32 = 64 * 1024
 	var threads uint8 = 4
 	var keyLen uint32 = 32
+	saltB64 := base64.RawStdEncoding.EncodeToString(salt)
 
-	hashedPassword := string(argon2.IDKey([]byte(password), []byte(salt), time, memory, threads, keyLen))
+	password = base64.RawStdEncoding.EncodeToString(argon2.IDKey([]byte(password), salt, time, memory, threads, keyLen))
+
+	// standard hash format
+	hashedPassword := fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s", argon2.Version, memory, time, threads, saltB64, password)
 
 	return hashedPassword
 }
 
-func getRandomSalt() string {
+func getRandomSalt() ([]byte, error) {
 	saltLen := 10
 	salt := make([]byte, saltLen)
 	_, err := rand.Read(salt)
 
 	if err != nil {
 		fmt.Println("error during reading secure random number: ", err)
-		return "implement-fallback-for-when-error-in-generating-salt"
+		return nil, err
 	}
 
-	return string(salt)
+	return salt, nil
 }
