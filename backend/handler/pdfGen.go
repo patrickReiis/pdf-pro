@@ -19,16 +19,6 @@ import (
 // The response `w` is a PDF with the contents of the request body if no errors happen
 func HandlePdfGen(w http.ResponseWriter, r *http.Request) {
 
-	// Returns an error if the request is not of Method POST
-	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", "POST")
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusMethodNotAllowed)
-
-		fmt.Fprint(w, `{"error":"Only POST method allowed"}`)
-		return
-	}
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
