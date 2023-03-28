@@ -26,7 +26,7 @@ func getRequestTimeStampImpl() []string {
 	return []string{fmt.Sprintf(`%s`, time.Now().UTC().Format(time.RFC3339))}
 }
 
-func getRandomApiKey() string {
+func GetRandomApiKey() string {
 	return getRandomApiKeyImpl()
 }
 
