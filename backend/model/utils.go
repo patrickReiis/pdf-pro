@@ -43,7 +43,7 @@ func getRandomApiKeyImpl() string {
 	return apiKey
 }
 
-func doesUserAlreadyExists(email string) (doesUserExists bool) {
+func DoesUserAlreadyExists(email string) (doesUserExists bool) {
 	return doesUserExistsImpl(email)
 }
 
