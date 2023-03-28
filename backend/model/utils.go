@@ -12,6 +12,7 @@ import (
 )
 
 const ApiKeyLength int = 80
+const MinimumPasswordLength int = 10
 
 // Returns a slice with the length of 1
 // The element is a timestamp of the time when the this function was called
