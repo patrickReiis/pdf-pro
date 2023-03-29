@@ -9,7 +9,7 @@ func TestGetRandomApiKey(t *testing.T) {
 
 	// generate an API KEY and append it to the slice
 	for i := 0; i < 100000; i++ {
-		apiKey := getRandomApiKey()
+		apiKey := GetRandomApiKey()
 		randomAPIs = append(randomAPIs, apiKey)
 
 		if len(apiKey) != ApiKeyLength {
