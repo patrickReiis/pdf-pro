@@ -14,15 +14,20 @@ func TestCreateUserAccount(t *testing.T) {
 		return
 	}
 
+	doesUserExists := DoesUserAlreadyExists(emailForTesting)
+	// The purpose of this test is to test the CREATE operation
+	// If the user account already exists delete it so it can be created
+	if doesUserExists == true {
+		_, err := DeleteUserAccountByEmail(emailForTesting)
+		if err != nil {
+			t.Errorf("Could not delete the user account so it could be created later, error: %s", err)
+			return
+		}
+	}
+
 	requestsTimestamp := []string{} // empty slice since this test is for creating an account
 
 	user := model.UserAccount{Email: emailForTesting, Password: "create-hash-password-function", RequestsTimestamp: requestsTimestamp, ApiKey: GetRandomApiKey()}
-
-	doesUserExists := DoesUserAlreadyExists(emailForTesting)
-
-	if doesUserExists == true {
-		return
-	}
 
 	_, err := CreateUserAccount(&user)
 	if err != nil {
