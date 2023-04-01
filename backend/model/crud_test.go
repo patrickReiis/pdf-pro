@@ -30,3 +30,18 @@ func TestCreateUserAccount(t *testing.T) {
 	}
 
 }
+
+func TestDeleteUserAccountByEmail(t *testing.T) {
+
+	emailForTesting := os.Getenv("RECIPIENT_TEST_EMAIL")
+	if emailForTesting == "" {
+		t.Error("RECIPIENT_TEST_EMAIL env variable is not set")
+		return
+	}
+
+	_, err := DeleteUserAccountByEmail(emailForTesting)
+	if err != nil {
+		t.Errorf("Could not delete the account, error: %s", err)
+	}
+
+}
