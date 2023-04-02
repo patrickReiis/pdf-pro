@@ -51,7 +51,7 @@ func HandleCreateUserAccount(w http.ResponseWriter, r *http.Request) {
 	doesUserExists := model.DoesUserAlreadyExists(userAccount.Email)
 	if doesUserExists == true {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusConflict)
 		fmt.Fprintf(w, `{"error": "The email '%s' has been taken"}`, userAccount.Email)
 		return
 	}
@@ -69,7 +69,7 @@ func HandleCreateUserAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusConflict)
+	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, `{"success": "Your account has been created"}`)
 
 }
