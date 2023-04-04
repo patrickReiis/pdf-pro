@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-// Verifies if the plain password with the hashed password
+// Verifies if the plain password is equivalent to the hashed password
 // Returns false if they are not equal or if an error happens during the parsing of the hash
 func Verify(hashedPass, plainPass string) (isEqual bool) {
 	return verifyImpl(hashedPass, plainPass)
