@@ -59,7 +59,7 @@ func doesUserExistsImpl(email string) (doesUserExists bool) {
 	return true
 }
 
-// Returns the user by its Api Key
+// Returns the user EMAIL by its Api Key
 // If the user does not exists returns an empty string
 func GetUserByApiKey(apiKey string) (user string) {
 	return getUserByApiKeyImpl(apiKey)
