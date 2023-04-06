@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"pdfPro/model"
 	"pdfPro/services/email"
 	"reflect"
 	"strings"
@@ -53,7 +54,13 @@ func HandlePdfGen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = email.SendEmail([]string{"example@example.com"}, "pdf pro - ok", []byte(""), pdfBuf.Bytes())
+	authHeader := r.Header.Get("Authorization")
+	apiKey := strings.Fields(authHeader)[1]
+	// The user does not need to be checked whether it exists or not
+	// because an auth middleware is called before this function
+	userEmail := model.GetUserByApiKey(apiKey)
+
+	err = email.SendEmail([]string{userEmail}, "pdf pro - ok", []byte(""), pdfBuf.Bytes())
 	if err != nil {
 		fmt.Print(err)
 		w.Header().Set("Content-Type", "application/json")
