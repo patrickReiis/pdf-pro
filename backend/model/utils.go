@@ -66,5 +66,8 @@ func GetUserByApiKey(apiKey string) (user string) {
 }
 
 func getUserByApiKeyImpl(apiKey string) string {
-	return "implement"
+	var user model.UserAccount
+	dbGorm.Where(model.UserAccount{ApiKey: apiKey}).First(&user)
+
+	return user.Email
 }
