@@ -49,5 +49,12 @@ func main() {
 		},
 	))
 
+	http.HandleFunc("/api/v1/login", middleware.AllMiddleware(handler.HandleUserLogin,
+		middleware.MiddlewareRoutes{
+			middleware.RouteWithRequestSizeLimit,
+			middleware.RouteOnlyPostMethod,
+		},
+	))
+
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
 }
