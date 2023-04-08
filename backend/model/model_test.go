@@ -1,6 +1,8 @@
 package model
 
-import "testing"
+import (
+	"testing"
+)
 
 // Test if the connection to the database is working
 func TestConnectDb(t *testing.T) {
@@ -8,5 +10,13 @@ func TestConnectDb(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+// Test if the secret is set
+func TestGetJwtSecret(t *testing.T) {
+	_, err := GetJwtSecret()
+	if err != nil {
+		t.Fatalf("%s", err)
 	}
 }
