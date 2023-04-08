@@ -34,3 +34,13 @@ func connectDb() (*gorm.DB, error) {
 
 	return db, nil
 }
+
+// Returns the secret used to sign JWT web tokens
+func GetJwtSecret() (string, error) {
+	secret, isSet := os.LookupEnv("JWT_SECRET")
+	if isSet == false || secret == "" {
+		return "", errors.New("The env variable JWT_SECRET is not set or is set to an empty value")
+	}
+
+	return secret, nil
+}
