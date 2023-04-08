@@ -24,6 +24,7 @@ services:
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       EMAIL_HOST_PORT: 587
       RECIPIENT_TEST_EMAIL: ${RECIPIENT_TEST_EMAIL}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "8080:8080"
     depends_on:
