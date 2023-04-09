@@ -71,3 +71,16 @@ func getUserByApiKeyImpl(apiKey string) string {
 
 	return user.Email
 }
+
+// If the user does not exist the string returned will be empty
+func GetUserPasswordByEmail(email string) string {
+	return getUserPasswordByEmailImpl(email)
+}
+
+func getUserPasswordByEmailImpl(email string) string {
+	var user model.UserAccount
+	dbGorm.Where(model.UserAccount{Email: email}).First(&user)
+
+	return user.Password
+
+}
