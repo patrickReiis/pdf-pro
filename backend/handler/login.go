@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"pdfPro/model"
 	modelEntity "pdfPro/model/entity"
+	"pdfPro/services/password"
+	"time"
 )
 
 func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +33,35 @@ func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, string(errorMsgJson))
 		return
 	}
+	// Flow of login:
+	// Pause for 2 seconds (to prevent brute force attacks)
+	// Check email
+	// Check password
+	// Returns JWT token
 
-	fmt.Fprint(w, "Implement")
+	time.Sleep(time.Second * 2)
+
+	doesUserExists := model.DoesUserAlreadyExists(userAccount.Email)
+	if doesUserExists == false {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+
+		errorMsg := map[string]string{"error": fmt.Sprintf("The user %s does not exist", userAccount.Email)}
+		errorMsgJson, _ := json.Marshal(errorMsg) // ignoring potential error
+		fmt.Fprint(w, string(errorMsgJson))
+		return
+	}
+
+	isEqual := password.Verify(model.GetUserPasswordByEmail(userAccount.Email), userAccount.Password)
+	if isEqual == false {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+
+		errorMsg := map[string]string{"error": "The password is incorrect"}
+		errorMsgJson, _ := json.Marshal(errorMsg) // ignoring potential error
+		fmt.Fprint(w, string(errorMsgJson))
+		return
+	}
+
+	fmt.Fprint(w, "Everything's fine so far")
 }
