@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func Sign(payload json.RawMessage) (string, error) {
+func Sign(payload json.RawMessage) (tokenEncoded string, err error) {
 	return signImpl(payload)
 }
 
