@@ -16,7 +16,7 @@ func signImpl(payload json.RawMessage) (string, error) {
 
 	err := json.Unmarshal(payload, &data)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	// Create token
@@ -25,13 +25,13 @@ func signImpl(payload json.RawMessage) (string, error) {
 	// Get secret key
 	key, err := model.GetJwtSecret()
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	// Sign the token with a secret key
 	tokenString, err := token.SignedString([]byte(key))
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return tokenString, nil
