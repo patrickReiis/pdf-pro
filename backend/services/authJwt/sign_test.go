@@ -2,7 +2,6 @@ package authJwt
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 	"time"
 )
@@ -14,15 +13,14 @@ func TestSign(t *testing.T) {
 
 	data := map[string]interface{}{"hello": "world", "exp": exp.Unix()}
 
-	payload, _ := json.Marshal(data) // ignoring potential error
-
-	payload = json.RawMessage(payload)
-
-	tokenEncoded, err := Sign(payload)
+	payload, err := json.Marshal(data)
 	if err != nil {
 		t.Error(err)
 	}
 
-	fmt.Println(tokenEncoded)
+	_, err = Sign(payload)
+	if err != nil {
+		t.Error(err)
+	}
 
 }
