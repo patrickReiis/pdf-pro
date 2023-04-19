@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"pdfPro/model"
 	modelEntity "pdfPro/model/entity"
+	"pdfPro/services/authJwt"
 	"pdfPro/services/password"
 	"time"
 )
@@ -63,5 +64,30 @@ func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, "Everything's fine so far")
+	credentials := make(map[string]interface{})
+	credentials["email"] = userAccount.Email
+	// Current UTC time + 2 hours
+	exp := time.Now().UTC().Add(time.Hour * 2)
+	credentials["exp"] = exp.Unix()
+
+	payload, _ := json.Marshal(credentials) // ignoring potential error
+
+	token, err := authJwt.Sign(payload)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+
+		errorMsg := map[string]string{"error": "Could not log you in. Our fault."}
+		errorMsgJson, _ := json.Marshal(errorMsg) // ignoring potential error
+		fmt.Fprint(w, string(errorMsgJson))
+		return
+	}
+
+	success := make(map[string]string)
+	success["success"] = token
+	jsonSuccess, _ := json.Marshal(success) // ignoring potential error
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, string(jsonSuccess))
 }
