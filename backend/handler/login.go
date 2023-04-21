@@ -35,12 +35,9 @@ func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Flow of login:
-	// Pause for 2 seconds (to prevent brute force attacks)
 	// Check email
 	// Check password
 	// Returns JWT token
-
-	time.Sleep(time.Second * 2)
 
 	doesUserExists := model.DoesUserAlreadyExists(userAccount.Email)
 	if doesUserExists == false {
