@@ -6,6 +6,8 @@ import (
 	"pdfPro/model"
 	"pdfPro/services/authJwt"
 	"strings"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // Only allows authenticated users to access the determined endpoint
@@ -30,14 +32,17 @@ func RouteWithAuthentication(w http.ResponseWriter, r *http.Request) (ok bool) {
 	}
 
 	token, err := authJwt.Verify(authHeaderParts[1], secret)
-	if err != nil {
+	// type assertion
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok == false || token.Valid == false {
+		fmt.Println(err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{"error":"You need to have a valid authentication to perform this action."}`)
+		fmt.Fprint(w, `{"error":"You need to login again"}`)
 		return false
 	}
 
-	fmt.Println(token.Claims)
+	fmt.Println(claims["email"])
 
 	return true
 }
