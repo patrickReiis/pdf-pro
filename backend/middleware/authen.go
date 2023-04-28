@@ -6,8 +6,6 @@ import (
 	"pdfPro/model"
 	"pdfPro/services/authJwt"
 	"strings"
-
-	"github.com/golang-jwt/jwt/v4"
 )
 
 // Only allows authenticated users to access the determined endpoint
@@ -31,10 +29,11 @@ func RouteWithAuthentication(w http.ResponseWriter, r *http.Request) (ok bool) {
 		return false
 	}
 
-	token, err := authJwt.Verify(authHeaderParts[1], secret)
+	token, err := authJwt.Verify(authHeaderParts[1], &authJwt.CustomClaims{}, secret)
 	// type assertion
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok == false || token.Valid == false {
+	claims, ok := token.Claims.(*authJwt.CustomClaims)
+
+	if err != nil || ok == false || token.Valid == false {
 		fmt.Println(err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -42,7 +41,13 @@ func RouteWithAuthentication(w http.ResponseWriter, r *http.Request) (ok bool) {
 		return false
 	}
 
-	fmt.Println(claims["email"])
+	doesUserExist := model.DoesUserAlreadyExists(claims.Email)
+	if doesUserExist == false {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprint(w, `{"error":"Your account does not exist anymore"}`)
+		return false
+	}
 
 	return true
 }
