@@ -28,7 +28,7 @@ func TestVerify(t *testing.T) {
 	}
 
 	for _, e := range testCases {
-		_, err := Verify(e.rawToken, e.secretKey)
+		_, err := Verify(e.rawToken, &CustomClaims{}, e.secretKey)
 
 		// The token should be valid but an error was returned
 		if err != nil && e.isValid == true {
