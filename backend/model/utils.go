@@ -82,5 +82,14 @@ func getUserPasswordByEmailImpl(email string) string {
 	dbGorm.Where(model.UserAccount{Email: email}).First(&user)
 
 	return user.Password
+}
 
+func GetUserApiKey(email string) (apiKey string, err error) {
+	var user model.UserAccount
+
+	result := dbGorm.Where(model.UserAccount{Email: email}).First(&user)
+	if result.Error != nil {
+		return "", result.Error
+	}
+	return user.ApiKey, nil
 }
