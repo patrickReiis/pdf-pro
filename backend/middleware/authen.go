@@ -30,11 +30,17 @@ func RouteWithAuthentication(w http.ResponseWriter, r *http.Request) (ok bool) {
 	}
 
 	token, err := authJwt.Verify(authHeaderParts[1], &authJwt.CustomClaims{}, secret)
+	if err != nil || token.Valid == false {
+		fmt.Println(err)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, `{"error":"Your token is invalid"}`)
+		return false
+	}
+
 	// type assertion
 	claims, ok := token.Claims.(*authJwt.CustomClaims)
-
-	if err != nil || ok == false || token.Valid == false {
-		fmt.Println(err)
+	if ok == false {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, `{"error":"You need to login again"}`)
