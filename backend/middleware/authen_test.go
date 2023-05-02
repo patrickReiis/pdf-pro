@@ -30,7 +30,7 @@ func TestRouteWithAuthentication(t *testing.T) {
 		{
 			"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXN0aW5nIjoiaGVsbG8sIHRlc3QifQ.0XqcZDpHNXQCWStAm9VMt9PTNt5kqagZBImk9ddXhps",
 			http.StatusBadRequest,
-			[]byte(`{"error":"You need to login again"}`)},
+			[]byte(`{"error":"Your token is invalid"}`)},
 	}
 
 	for _, e := range testCases {
