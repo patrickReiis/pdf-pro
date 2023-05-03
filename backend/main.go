@@ -56,5 +56,13 @@ func main() {
 		},
 	))
 
+	http.HandleFunc("/api/v1/getApiKey", middleware.AllMiddleware(handler.HandleGetApiKey,
+		middleware.MiddlewareRoutes{
+			middleware.RouteOnlyGetMethod,
+			middleware.RouteWithAuthentication,
+			middleware.RouteWithRequestSizeLimit,
+		},
+	))
+
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
 }
