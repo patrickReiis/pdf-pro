@@ -17,3 +17,16 @@ func RouteOnlyPostMethod(w http.ResponseWriter, r *http.Request) (ok bool) {
 	}
 	return true
 }
+
+// Returns false if the request is not of Method GET
+func RouteOnlyGetMethod(w http.ResponseWriter, r *http.Request) (ok bool) {
+	if r.Method != http.MethodGet {
+		w.Header().Set("Allow", "GET")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+
+		fmt.Fprint(w, `{"error":"Only GET method allowed"}`)
+		return false
+	}
+	return true
+}
