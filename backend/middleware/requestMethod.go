@@ -30,3 +30,16 @@ func RouteOnlyGetMethod(w http.ResponseWriter, r *http.Request) (ok bool) {
 	}
 	return true
 }
+
+// Returns false if the request is not of Method DELETE
+func RouteOnlyDeleteMethod(w http.ResponseWriter, r *http.Request) (ok bool) {
+	if r.Method != http.MethodDelete {
+		w.Header().Set("Allow", "DELETE")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+
+		fmt.Fprint(w, `{"error":"Only DELETE method allowed"}`)
+		return false
+	}
+	return true
+}
