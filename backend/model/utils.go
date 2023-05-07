@@ -2,13 +2,10 @@ package model
 
 import (
 	"crypto/rand"
-	"errors"
 	"fmt"
 	"math/big"
 	model "pdfPro/model/entity"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 const ApiKeyLength int = 80
@@ -51,11 +48,10 @@ func doesUserExistsImpl(email string) (doesUserExists bool) {
 	var user model.UserAccount
 	result := dbGorm.Where("email = ?", email).First(&user)
 
-	userNotFound := errors.Is(result.Error, gorm.ErrRecordNotFound)
-	if userNotFound == true {
+	if result.Error != nil {
+		fmt.Println(result.Error)
 		return false
 	}
-
 	return true
 }
 
