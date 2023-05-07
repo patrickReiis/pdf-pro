@@ -64,5 +64,13 @@ func main() {
 		},
 	))
 
+	http.HandleFunc("/api/v1/deleteAccount", middleware.AllMiddleware(handler.HandleDeleteUserAccount,
+		middleware.MiddlewareRoutes{
+			middleware.RouteOnlyDeleteMethod,
+			middleware.RouteWithAuthentication,
+			middleware.RouteWithRequestSizeLimit,
+		},
+	))
+
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
 }
