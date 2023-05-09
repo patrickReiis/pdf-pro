@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	model "pdfPro/model/entity"
 
@@ -11,9 +12,9 @@ import (
 )
 
 // My GORM database instance
-var dbGorm, _ = connectDb() // Ignoring possible returned error since it is checked in the `model_test.go` file
+var dbGorm *gorm.DB
 
-func connectDb() (*gorm.DB, error) {
+func connectDb() error {
 
 	// I don't need to check for the env variables since they are checked in the `main` function
 	host := os.Getenv("DATABASE_HOST")
@@ -26,13 +27,26 @@ func connectDb() (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to connect database: %s", err))
+		return errors.New(fmt.Sprintf("failed to connect database: %s", err))
 	}
 
 	// migrate schemas
 	db.AutoMigrate(&model.UserAccount{})
 
-	return db, nil
+	dbGorm = db
+
+	return nil
+}
+
+func InitDatabase() error {
+	if dbGorm == nil {
+		err := connectDb()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return nil
 }
 
 // Returns the secret used to sign JWT web tokens
