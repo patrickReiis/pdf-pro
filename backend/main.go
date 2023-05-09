@@ -6,9 +6,16 @@ import (
 	"os"
 	"pdfPro/handler"
 	"pdfPro/middleware"
+	"pdfPro/model"
 )
 
 func main() {
+	err := model.InitDatabase()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
 	port, ok := os.LookupEnv("PORT")
 	if ok != true {
 		log.Fatalf("The env variable %s is not set", "PORT")
