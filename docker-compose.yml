@@ -29,6 +29,7 @@ services:
       - "8080:8080"
     depends_on:
       - pdf_pro_db
+    restart: on-failure:3
 
 volumes:
   pgdata:
