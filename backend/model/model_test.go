@@ -6,7 +6,7 @@ import (
 
 // Test if the connection to the database is working
 func TestConnectDb(t *testing.T) {
-	_, err := connectDb()
+	err := connectDb()
 
 	if err != nil {
 		t.Error(err)
