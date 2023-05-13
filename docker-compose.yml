@@ -29,7 +29,12 @@ services:
       - "8080:8080"
     depends_on:
       - pdf_pro_db
-    restart: on-failure:3
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
 
 volumes:
   pgdata:
