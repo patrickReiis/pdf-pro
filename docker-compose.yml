@@ -32,9 +32,9 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 5s
+        delay: 10s
         max_attempts: 3
-        window: 10s
+        window: 100s
 
 volumes:
   pgdata:
