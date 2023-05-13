@@ -3,7 +3,6 @@ package model
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	model "pdfPro/model/entity"
 
@@ -42,8 +41,9 @@ func InitDatabase() error {
 	if dbGorm == nil {
 		err := connectDb()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
+
 	}
 
 	return nil
