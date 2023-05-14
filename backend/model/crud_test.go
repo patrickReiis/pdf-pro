@@ -1,12 +1,17 @@
 package model
 
 import (
+	"log"
 	"os"
 	model "pdfPro/model/entity"
 	"testing"
 )
 
 func TestCreateUserAccount(t *testing.T) {
+	err := InitDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	emailForTesting := os.Getenv("RECIPIENT_TEST_EMAIL")
 	if emailForTesting == "" {
@@ -29,7 +34,7 @@ func TestCreateUserAccount(t *testing.T) {
 
 	user := model.UserAccount{Email: emailForTesting, Password: "create-hash-password-function", RequestsTimestamp: requestsTimestamp, ApiKey: GetRandomApiKey()}
 
-	_, err := CreateUserAccount(&user)
+	_, err = CreateUserAccount(&user)
 	if err != nil {
 		t.Errorf("Could not create an user account, error: %s", err)
 	}
@@ -37,6 +42,10 @@ func TestCreateUserAccount(t *testing.T) {
 }
 
 func TestDeleteUserAccountByEmail(t *testing.T) {
+	err := InitDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	emailForTesting := os.Getenv("RECIPIENT_TEST_EMAIL")
 	if emailForTesting == "" {
@@ -64,7 +73,7 @@ func TestDeleteUserAccountByEmail(t *testing.T) {
 	var user model.UserAccount
 	user.Email = emailForTesting
 
-	_, err := CreateUserAccount(&user)
+	_, err = CreateUserAccount(&user)
 	if err != nil {
 		t.Errorf("Could not create an account so it could be deleted later, error: %s", err)
 		return

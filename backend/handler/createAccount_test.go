@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -20,6 +21,10 @@ import (
 // Test the ability to create an account using the '/api/v1/createAccount' endpoint.
 // The test paradigm used in this function is Table Driven Test.
 func TestHandleCreateUserAccount(t *testing.T) {
+	err := model.InitDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
 	emailForTesting := os.Getenv("RECIPIENT_TEST_EMAIL")
 	if emailForTesting == "" {
 		t.Error("RECIPIENT_TEST_EMAIL env variable is not set")

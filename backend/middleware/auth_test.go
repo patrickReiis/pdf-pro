@@ -5,14 +5,20 @@ package middleware
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"pdfPro/model"
 	"testing"
 )
 
 // Test the Auth middleware,
 // it's successful if the user does not exists or exists
 func TestRouteWithAuth(t *testing.T) {
+	err := model.InitDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// POST request to PDF route
 	// The route can essentially be anything since the test is focused on the Auth middleware
