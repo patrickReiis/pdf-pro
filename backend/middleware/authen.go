@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"pdfPro/model"
@@ -54,6 +55,9 @@ func RouteWithAuthentication(w http.ResponseWriter, r *http.Request) (ok bool) {
 		fmt.Fprint(w, `{"error":"Your account does not exist anymore"}`)
 		return false
 	}
+
+	ctx := context.WithValue(r.Context(), "userEmail", claims.Email)
+	*r = *r.WithContext(ctx)
 
 	return true
 }
