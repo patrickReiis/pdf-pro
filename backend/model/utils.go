@@ -96,3 +96,13 @@ func GetUserApiKey(email string) (apiKey string, err error) {
 	}
 	return user.ApiKey, nil
 }
+
+func GetUserTimestampByApiKey(apiKey string) model.JSONB {
+	return getUserTimestampByApiKeyImpl(apiKey)
+}
+
+func getUserTimestampByApiKeyImpl(apiKey string) model.JSONB {
+	var user model.UserAccount
+
+	return user.RequestsTimestamp
+}
