@@ -43,8 +43,8 @@ func main() {
 
 	http.HandleFunc("/api/v1/genPdf", middleware.AllMiddleware(handler.HandlePdfGen,
 		middleware.MiddlewareRoutes{
-			middleware.RouteWithAuth,
 			middleware.RouteWithRequestSizeLimit,
+			middleware.RouteWithAuth,
 			middleware.RouteOnlyPostMethod,
 		},
 	))
@@ -65,17 +65,17 @@ func main() {
 
 	http.HandleFunc("/api/v1/getApiKey", middleware.AllMiddleware(handler.HandleGetApiKey,
 		middleware.MiddlewareRoutes{
+			middleware.RouteWithRequestSizeLimit,
 			middleware.RouteOnlyGetMethod,
 			middleware.RouteWithAuthentication,
-			middleware.RouteWithRequestSizeLimit,
 		},
 	))
 
 	http.HandleFunc("/api/v1/deleteAccount", middleware.AllMiddleware(handler.HandleDeleteUserAccount,
 		middleware.MiddlewareRoutes{
+			middleware.RouteWithRequestSizeLimit,
 			middleware.RouteOnlyDeleteMethod,
 			middleware.RouteWithAuthentication,
-			middleware.RouteWithRequestSizeLimit,
 		},
 	))
 
