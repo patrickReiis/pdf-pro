@@ -46,6 +46,7 @@ func main() {
 			middleware.RouteWithRequestSizeLimit,
 			middleware.RouteWithAuth,
 			middleware.RouteOnlyPostMethod,
+			middleware.RouteWithRateLimiting,
 		},
 	))
 
