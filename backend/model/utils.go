@@ -17,7 +17,7 @@ const MinimumPasswordLength int = 10
 // Returns a slice with the length of 1
 // The element is a timestamp of the time when the this function was called
 // The format is ISO 8601
-func getRequestTimeStamp() []string {
+func GetRequestTimeStamp() []string {
 	return getRequestTimeStampImpl()
 }
 
@@ -97,12 +97,16 @@ func GetUserApiKey(email string) (apiKey string, err error) {
 	return user.ApiKey, nil
 }
 
-func GetUserTimestampByApiKey(apiKey string) model.JSONB {
+func GetUserTimestampByApiKey(apiKey string) (model.JSONB, error) {
 	return getUserTimestampByApiKeyImpl(apiKey)
 }
 
-func getUserTimestampByApiKeyImpl(apiKey string) model.JSONB {
+func getUserTimestampByApiKeyImpl(apiKey string) (model.JSONB, error) {
 	var user model.UserAccount
 
-	return user.RequestsTimestamp
+	result := dbGorm.Where(model.UserAccount{ApiKey: apiKey}, &user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user.RequestsTimestamp, nil
 }
