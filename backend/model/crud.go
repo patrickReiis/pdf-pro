@@ -40,3 +40,9 @@ func deleteUserAccountByEmailImpl(email string) (ok bool, err error) {
 	return true, nil
 
 }
+
+func UpdateUserTimestamp() {
+	updateUserTimestampImpl()
+}
+
+func updateUserTimestampImpl() {}
